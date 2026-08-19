@@ -1,0 +1,252 @@
+import { ImageResponse } from "next/og";
+import { NextRequest } from "next/server";
+import QRCode from "qrcode";
+import { connectToDatabase } from "@/lib/mongodb";
+import { Customer } from "@/models/Tcycustomer";
+import * as fs from "fs";
+import * as path from "path";
+
+export const runtime = "nodejs";
+
+function getBaseUrl(req: NextRequest): string {
+  const configured = process.env.NEXT_PUBLIC_BASE_URL;
+  if (configured) return configured.replace(/\/+$/, "");
+  const proto = req.headers.get("x-forwarded-proto") || "https";
+  const host = req.headers.get("host");
+  return `${proto}://${host}`;
+}
+
+// Reads a file from public/images/ and returns a base64 data URI, or null if
+// it can't be found/read — callers must handle the null case gracefully so a
+// single missing asset never crashes the whole image.
+function loadImageDataUri(filename: string, mime = "image/png"): string | null {
+  try {
+    const filePath = path.join(process.cwd(), "public/images", filename);
+    const buffer = fs.readFileSync(filePath);
+    return `data:${mime};base64,${buffer.toString("base64")}`;
+  } catch (err) {
+    console.error(`[voucher-image] Failed to load ${filename}:`, err);
+    return null;
+  }
+}
+
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { voucherId: string } }
+) {
+  try {
+    const rawVoucherId = decodeURIComponent(params.voucherId).trim();
+    const normalizedVoucherId = rawVoucherId.replace(/^#/, "");
+    const candidateIds = Array.from(
+      new Set([rawVoucherId, normalizedVoucherId, `#${normalizedVoucherId}`])
+    );
+
+    await connectToDatabase();
+    const customer = await Customer.findOne({ voucherId: { $in: candidateIds } }).lean();
+
+    if (!customer) {
+      console.error("[voucher-image] Voucher not found:", rawVoucherId);
+      return new Response("Voucher not found", { status: 404 });
+    }
+
+    // Load all static promotional assets. Any of these can be missing without
+    // crashing the render — the layout just omits that piece.
+    const bgImage = loadImageDataUri("bg.png");
+    const badgeImage = loadImageDataUri("101.png");
+    const figureImage = loadImageDataUri("bhima-boy.png");
+    const modelImage = loadImageDataUri("model.png");
+    const giftImage = loadImageDataUri("gift.png");
+    const grandImage = loadImageDataUri("grand.png");
+    const amountImage = loadImageDataUri("5000.png");
+    const logoImage = loadImageDataUri("logo.png");
+
+    let qrDataUrl: string | null = null;
+    try {
+      const scanUrl = `${getBaseUrl(req)}/voucher/${encodeURIComponent(customer.voucherId)}`;
+      qrDataUrl = await QRCode.toDataURL(scanUrl, {
+        margin: 1,
+        width: 200,
+        color: { dark: "#181511", light: "#ffffff" },
+      });
+    } catch (err) {
+      console.error("[voucher-image] Failed to generate QR code:", err);
+    }
+
+    const issuedDate = new Date(customer.createdAt).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
+    return new ImageResponse(
+      (
+        <div
+          style={{
+            width: "1200px",
+            height: "630px",
+            display: "flex",
+            position: "relative",
+            borderRadius: "20px",
+            overflow: "hidden",
+            background: "#1a1410",
+          }}
+        >
+          {/* Background */}
+          {bgImage && (
+            <img
+              src={bgImage}
+              width={1200}
+              height={630}
+              style={{ position: "absolute", top: "0px", left: "0px", objectFit: "cover" }}
+              alt=""
+            />
+          )}
+
+          {/* Top-left: 10 Years badge — adjust width/height to match your asset's real ratio */}
+          {badgeImage && (
+            <img
+              src={badgeImage}
+              width={220}
+              height={140}
+              style={{ position: "absolute", top: "20px", left: "30px", objectFit: "contain" }}
+              alt="10 Years Celebrating"
+            />
+          )}
+
+          {/* Top-right: Bhima boy figure */}
+          {figureImage && (
+            <img
+              src={figureImage}
+              width={150}
+              height={220}
+              style={{ position: "absolute", top: "20px", right: "0px", objectFit: "contain" }}
+              alt="Celebration Figure"
+            />
+          )}
+
+          {/* Left: model image, bleeding to the edge */}
+          {modelImage && (
+            <img
+              src={modelImage}
+              width={340}
+              height={630}
+              style={{ position: "absolute", left: "0px", top: "0px", objectFit: "cover" }}
+              alt="Bhima Model"
+            />
+          )}
+
+          {/* Center: gift label + grand opening badge, stacked and centered */}
+          <div
+            style={{
+              position: "absolute",
+              top: "0px",
+              left: "300px",
+              right: "260px",
+              bottom: "0px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "24px",
+            }}
+          >
+            {giftImage && (
+              <img src={giftImage} width={260} height={90} style={{ objectFit: "contain" }} alt="Gift" />
+            )}
+            {grandImage && (
+              <img
+                src={grandImage}
+                width={340}
+                height={160}
+                style={{ objectFit: "contain" }}
+                alt="Grand Opening"
+              />
+            )}
+          </div>
+
+          {/* Right: amount badge */}
+          {amountImage && (
+            <img
+              src={amountImage}
+              width={300}
+              height={230}
+              style={{ position: "absolute", right: "20px", bottom: "150px", objectFit: "contain" }}
+              alt="₹5000"
+            />
+          )}
+
+          {/* QR code — dynamic, unique per voucher (position not specified in the
+              original CSS, placed bottom-left) */}
+          {qrDataUrl && (
+            <div
+              style={{
+                position: "absolute",
+                left: "24px",
+                bottom: "24px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                background: "#ffffff",
+                borderRadius: "10px",
+                padding: "10px",
+              }}
+            >
+              <img src={qrDataUrl} width={100} height={100} alt="Redemption QR code" />
+              <div
+                style={{
+                  display: "flex",
+                  color: "#181511",
+                  fontSize: "10px",
+                  letterSpacing: "1px",
+                  textTransform: "uppercase",
+                  marginTop: "4px",
+                }}
+              >
+                Scan to verify
+              </div>
+            </div>
+          )}
+
+          {/* Footer: logo + per-customer voucher details */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: "20px",
+              left: "300px",
+              right: "20px",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: "6px",
+            }}
+          >
+            {logoImage && (
+              <img src={logoImage} width={200} height={70} style={{ objectFit: "contain" }} alt="BHIMA" />
+            )}
+            <div
+              style={{
+                display: "flex",
+                color: "#4a4a4a",
+                fontSize: "16px",
+                fontWeight: 700,
+                letterSpacing: "1px",
+                background: "#ffffff",
+                padding: "4px 16px",
+                borderRadius: "6px",
+              }}
+            >
+              {customer.fullName} · {customer.voucherId} · Issued {issuedDate}
+            </div>
+          </div>
+        </div>
+      ),
+      {
+        width: 1200,
+        height: 630,
+      }
+    );
+  } catch (err) {
+    console.error("[voucher-image] Unhandled error:", err);
+    return new Response("Failed to generate voucher image", { status: 500 });
+  }
+}
