@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { isAuthorizedAdminRequest } from "@/lib/adminAuth";
 import { TcyCustomer } from "@/models/Tcycustomer";
-import { Counter, resetCounter } from "@/models/Counter";
+import { Counter, resetCounter } from "@/models/Tcycounter";
 
 export async function POST(req: NextRequest) {
   if (!isAuthorizedAdminRequest(req)) {
