@@ -119,7 +119,7 @@ export async function GET(
               src={figureImage}
               width={150}
               height={220}
-              style={{ position: "absolute", top: "20px", right: "0px", objectFit: "contain" }}
+              style={{ position: "absolute", top: "0px", right: "0px", objectFit: "contain" }}
               alt="Celebration Figure"
             />
           )}
@@ -142,7 +142,7 @@ export async function GET(
               top: "0px",
               left: "300px",
               right: "260px",
-              bottom: "0px",
+              bottom: "100px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -172,8 +172,8 @@ export async function GET(
             <div
               style={{
                 position: "absolute",
-                left: "240px",
-                bottom: "100px",
+                left: "500px",
+                bottom: "120px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -203,7 +203,7 @@ export async function GET(
             style={{
               position: "absolute",
               bottom: "20px",
-              left: "300px",
+              left: "100px",
               right: "20px",
               display: "flex",
               flexDirection: "column",
@@ -218,8 +218,8 @@ export async function GET(
         </div>
       ),
       {
-        width: 1200,
-        height: 630,
+        width: 1000,
+        height: 530,
       }
     );
   } catch (err) {
