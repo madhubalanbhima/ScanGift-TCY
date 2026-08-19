@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { TcyCustomer } from "@/models/Tcycustomer";
-import { getNextSequence } from "@/models/Counter";
+import { getNextSequence } from "@/models/Tcycounter";
 import { formatVoucherId } from "@/lib/voucher";
 import {
   validateRegistration,
