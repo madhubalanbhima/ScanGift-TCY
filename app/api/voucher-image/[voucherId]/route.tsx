@@ -125,7 +125,7 @@ export async function GET(
           )}
 
           {/* Left: model image, bleeding to the edge */}
-          {modelImage && (
+          {/* {modelImage && (
             <img
               src={modelImage}
               width={340}
@@ -133,7 +133,7 @@ export async function GET(
               style={{ position: "absolute", left: "40px", top: "0px", objectFit: "cover" }}
               alt="Bhima Model"
             />
-          )}
+          )} */}
 
           {/* Center: gift label + grand opening badge, stacked and centered */}
           <div
@@ -151,7 +151,7 @@ export async function GET(
             }}
           >
             {giftImage && (
-              <img src={giftImage} width={260} height={90} style={{ objectFit: "contain" }} alt="Gift" />
+              <img src={giftImage} width={560} height={150} style={{ objectFit: "contain" }} alt="Gift" />
             )}
           </div>
 
@@ -172,8 +172,8 @@ export async function GET(
             <div
               style={{
                 position: "absolute",
-                left: "24px",
-                bottom: "24px",
+                left: "240px",
+                bottom: "100px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -209,6 +209,8 @@ export async function GET(
               flexDirection: "column",
               alignItems: "center",
               gap: "6px",
+              backgroundColor: "#fff",
+              fontSize: "40px"
             }}
           >
             {customer.fullName} · {customer.voucherId} · Issued {issuedDate}
