@@ -130,7 +130,7 @@ export async function GET(
               src={modelImage}
               width={340}
               height={630}
-              style={{ position: "absolute", left: "0px", top: "0px", objectFit: "cover" }}
+              style={{ position: "absolute", left: "40px", top: "0px", objectFit: "cover" }}
               alt="Bhima Model"
             />
           )}
@@ -153,19 +153,10 @@ export async function GET(
             {giftImage && (
               <img src={giftImage} width={260} height={90} style={{ objectFit: "contain" }} alt="Gift" />
             )}
-            {grandImage && (
-              <img
-                src={grandImage}
-                width={340}
-                height={160}
-                style={{ objectFit: "contain" }}
-                alt="Grand Opening"
-              />
-            )}
           </div>
 
           {/* Right: amount badge */}
-          {amountImage && (
+          {/* {amountImage && (
             <img
               src={amountImage}
               width={300}
@@ -173,7 +164,7 @@ export async function GET(
               style={{ position: "absolute", right: "20px", bottom: "150px", objectFit: "contain" }}
               alt="₹5000"
             />
-          )}
+          )} */}
 
           {/* QR code — dynamic, unique per voucher (position not specified in the
               original CSS, placed bottom-left) */}
@@ -191,7 +182,7 @@ export async function GET(
                 padding: "10px",
               }}
             >
-              <img src={qrDataUrl} width={100} height={100} alt="Redemption QR code" />
+              <img src={qrDataUrl} width={200} height={200} alt="Redemption QR code" />
               <div
                 style={{
                   display: "flex",
@@ -199,7 +190,7 @@ export async function GET(
                   fontSize: "10px",
                   letterSpacing: "1px",
                   textTransform: "uppercase",
-                  marginTop: "4px",
+                  marginTop: "6px",
                 }}
               >
                 Scan to verify
@@ -220,23 +211,7 @@ export async function GET(
               gap: "6px",
             }}
           >
-            {logoImage && (
-              <img src={logoImage} width={200} height={70} style={{ objectFit: "contain" }} alt="BHIMA" />
-            )}
-            <div
-              style={{
-                display: "flex",
-                color: "#4a4a4a",
-                fontSize: "16px",
-                fontWeight: 700,
-                letterSpacing: "1px",
-                background: "#ffffff",
-                padding: "4px 16px",
-                borderRadius: "6px",
-              }}
-            >
-              {customer.fullName} · {customer.voucherId} · Issued {issuedDate}
-            </div>
+            {customer.fullName} · {customer.voucherId} · Issued {issuedDate}
           </div>
         </div>
       ),
