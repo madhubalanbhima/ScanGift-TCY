@@ -119,7 +119,7 @@ export async function GET(
               src={figureImage}
               width={150}
               height={220}
-              style={{ position: "absolute", top: "20px", right: "0px", objectFit: "contain" }}
+              style={{ position: "absolute", top: "0px", right: "0px", objectFit: "contain" }}
               alt="Celebration Figure"
             />
           )}
@@ -140,7 +140,7 @@ export async function GET(
             style={{
               position: "absolute",
               top: "0px",
-              left: "200px",
+              left: "300px",
               right: "160px",
               bottom: "0px",
               display: "flex",
@@ -151,7 +151,7 @@ export async function GET(
             }}
           >
             {giftImage && (
-              <img src={giftImage} width={460} height={150} style={{ objectFit: "contain" }} alt="Gift" />
+              <img src={giftImage} width={560} height={250} style={{ objectFit: "contain" }} alt="Gift" />
             )}
             {/* {grandImage && (
               <img
@@ -227,7 +227,7 @@ export async function GET(
               style={{
                 display: "flex",
                 color: "#4a4a4a",
-                fontSize: "16px",
+                fontSize: "35px",
                 fontWeight: 700,
                 letterSpacing: "1px",
                 background: "#ffffff",
