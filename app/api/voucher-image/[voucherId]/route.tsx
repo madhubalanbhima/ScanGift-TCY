@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import QRCode from "qrcode";
 import { connectToDatabase } from "@/lib/mongodb";
-import { TcyCustomer } from "@/models/Tcycustomer";
+import { TcyCustomer as Customer } from "@/models/Tcycustomer";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -42,7 +42,7 @@ export async function GET(
     );
 
     await connectToDatabase();
-    const customer = await TcyCustomer.findOne({ voucherId: { $in: candidateIds } }).lean();
+    const customer = await Customer.findOne({ voucherId: { $in: candidateIds } }).lean();
 
     if (!customer) {
       console.error("[voucher-image] Voucher not found:", rawVoucherId);
@@ -119,30 +119,30 @@ export async function GET(
               src={figureImage}
               width={150}
               height={220}
-              style={{ position: "absolute", top: "0px", right: "0px", objectFit: "contain" }}
+              style={{ position: "absolute", top: "20px", right: "0px", objectFit: "contain" }}
               alt="Celebration Figure"
             />
           )}
 
           {/* Left: model image, bleeding to the edge */}
           {/* {modelImage && (
-            <img
+            <img  
               src={modelImage}
               width={340}
               height={630}
-              style={{ position: "absolute", left: "40px", top: "0px", objectFit: "cover" }}
+              style={{ position: "absolute", left: "0px", top: "0px", objectFit: "cover" }}
               alt="Bhima Model"
             />
-          )} */}
+          )}  */}
 
           {/* Center: gift label + grand opening badge, stacked and centered */}
           <div
             style={{
               position: "absolute",
               top: "0px",
-              left: "300px",
-              right: "260px",
-              bottom: "100px",
+              left: "200px",
+              right: "160px",
+              bottom: "0px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
@@ -151,8 +151,17 @@ export async function GET(
             }}
           >
             {giftImage && (
-              <img src={giftImage} width={560} height={150} style={{ objectFit: "contain" }} alt="Gift" />
+              <img src={giftImage} width={460} height={150} style={{ objectFit: "contain" }} alt="Gift" />
             )}
+            {/* {grandImage && (
+              <img
+                src={grandImage}
+                width={340}
+                height={160}
+                style={{ objectFit: "contain" }}
+                alt="Grand Opening"
+              />
+            )} */}
           </div>
 
           {/* Right: amount badge */}
@@ -172,8 +181,8 @@ export async function GET(
             <div
               style={{
                 position: "absolute",
-                left: "500px",
-                bottom: "120px",
+                left: "100px",
+                bottom: "24px",
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -190,7 +199,7 @@ export async function GET(
                   fontSize: "10px",
                   letterSpacing: "1px",
                   textTransform: "uppercase",
-                  marginTop: "6px",
+                  marginTop: "4px",
                 }}
               >
                 Scan to verify
@@ -203,23 +212,37 @@ export async function GET(
             style={{
               position: "absolute",
               bottom: "20px",
-              left: "100px",
+              left: "200px",
               right: "20px",
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
               gap: "6px",
-              backgroundColor: "#fff",
-              fontSize: "40px"
             }}
           >
-            {customer.fullName} · {customer.voucherId} · Issued {issuedDate}
+            {/* {logoImage && (
+              <img src={logoImage} width={200} height={70} style={{ objectFit: "contain" }} alt="BHIMA" />
+            )} */}
+            <div
+              style={{
+                display: "flex",
+                color: "#4a4a4a",
+                fontSize: "16px",
+                fontWeight: 700,
+                letterSpacing: "1px",
+                background: "#ffffff",
+                padding: "4px 16px",
+                borderRadius: "6px",
+              }}
+            >
+              {customer.fullName} · {customer.voucherId} · Issued {issuedDate}
+            </div>
           </div>
         </div>
       ),
       {
-        width: 1000,
-        height: 530,
+        width: 1200,
+        height: 630,
       }
     );
   } catch (err) {
