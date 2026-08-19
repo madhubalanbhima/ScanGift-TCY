@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { isAuthorizedAdminRequest } from "@/lib/adminAuth";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 import { Counter, resetCounter } from "@/models/Counter";
 
 export async function POST(req: NextRequest) {
@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectToDatabase();
 
-    await Customer.deleteMany({});
+    await TcyCustomer.deleteMany({});
     await Counter.deleteMany({ _id: "voucher" });
     await resetCounter("voucher", 1000);
 

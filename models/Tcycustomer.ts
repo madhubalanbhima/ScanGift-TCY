@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, models } from "mongoose";
 
-export interface ICustomer {
+export interface ITcyCustomer {
   _id: string;
   fullName: string;
   whatsappNumber: string;
@@ -17,7 +17,7 @@ export interface ICustomer {
   updatedAt: Date;
 }
 
-const CustomerSchema = new Schema<ICustomer>(
+const CustomerSchema = new Schema<ITcyCustomer>(
   {
     fullName: { type: String, required: true, trim: true },
     whatsappNumber: { type: String, required: true, trim: true, index: true },
@@ -38,6 +38,6 @@ const CustomerSchema = new Schema<ICustomer>(
   { timestamps: true }
 );
 
-export const Customer =
-  (models.Customer as mongoose.Model<ICustomer>) ||
-  model<ICustomer>("Customer", CustomerSchema);
+export const TcyCustomer =
+  (models.TcyCustomer as mongoose.Model<ITcyCustomer>) ||
+  model<ITcyCustomer>("TcyCustomer", CustomerSchema);

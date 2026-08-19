@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import QRCode from "qrcode";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -42,7 +42,7 @@ export async function GET(
     );
 
     await connectToDatabase();
-    const customer = await Customer.findOne({ voucherId: { $in: candidateIds } }).lean();
+    const customer = await TcyCustomer.findOne({ voucherId: { $in: candidateIds } }).lean();
 
     if (!customer) {
       console.error("[voucher-image] Voucher not found:", rawVoucherId);

@@ -1,6 +1,6 @@
 import mongoose, { Schema, model, models } from "mongoose";
 
-export interface IVoucherScan {
+export interface ITcyVoucherScan {
   _id: string;
   voucherId: string;
   customerId: string;
@@ -8,13 +8,13 @@ export interface IVoucherScan {
   userAgent?: string;
 }
 
-const VoucherScanSchema = new Schema<IVoucherScan>({
+const VoucherScanSchema = new Schema<ITcyVoucherScan>({
   voucherId: { type: String, required: true, index: true },
   customerId: { type: String, required: true, index: true },
   scannedAt: { type: Date, default: Date.now },
   userAgent: { type: String },
 });
 
-export const VoucherScan =
-  (models.VoucherScan as mongoose.Model<IVoucherScan>) ||
-  model<IVoucherScan>("VoucherScan", VoucherScanSchema);
+export const TcyVoucherScan =
+  (models.TcyVoucherScan as mongoose.Model<ITcyVoucherScan>) ||
+  model<ITcyVoucherScan>("TcyVoucherScan", VoucherScanSchema);

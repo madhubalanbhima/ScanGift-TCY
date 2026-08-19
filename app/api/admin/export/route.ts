@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 import { isAuthorizedAdminRequest } from "@/lib/adminAuth";
 
 function csvEscape(value: unknown): string {
@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
 
   try {
     await connectToDatabase();
-    const customers = await Customer.find().sort({ createdAt: -1 }).lean();
+    const customers = await TcyCustomer.find().sort({ createdAt: -1 }).lean();
 
     const headers = [
       "Voucher ID",

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 
 export async function GET(
   req: NextRequest,
@@ -14,7 +14,7 @@ export async function GET(
       new Set([rawVoucherId, normalizedVoucherId, `#${normalizedVoucherId}`])
     );
 
-    const customer = await Customer.findOne({ voucherId: { $in: candidateIds } }).lean();
+    const customer = await TcyCustomer.findOne({ voucherId: { $in: candidateIds } }).lean();
 
     if (!customer) {
       return NextResponse.json(
