@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 import { getNextSequence } from "@/models/Counter";
 import { formatVoucherId } from "@/lib/voucher";
 import {
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
 
-    const existingCustomer = await Customer.findOne({ whatsappNumber });
+    const existingCustomer = await TcyCustomer.findOne({ whatsappNumber });
     if (existingCustomer) {
       return NextResponse.json(
         {
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
     const sequence = await getNextSequence("voucher");
     const voucherId = formatVoucherId(sequence);
 
-    const customer = await Customer.create({
+    const customer = await TcyCustomer.create({
       fullName,
       whatsappNumber,
       address,
@@ -103,7 +103,7 @@ export async function GET(req: NextRequest) {
 
   try {
     await connectToDatabase();
-    const customers = await Customer.find().sort({ createdAt: -1 }).lean();
+    const customers = await TcyCustomer.find().sort({ createdAt: -1 }).lean();
     return NextResponse.json({ success: true, customers });
   } catch (err) {
     console.error("GET /api/customers error:", err);

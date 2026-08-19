@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 import { isAuthorizedAdminRequest } from "@/lib/adminAuth";
 
 export async function GET(
@@ -14,7 +14,7 @@ export async function GET(
   try {
     await connectToDatabase();
     const whatsappNumber = decodeURIComponent(params.number).trim();
-    const customers = await Customer.find({ whatsappNumber }).sort({ createdAt: -1 }).lean();
+    const customers = await TcyCustomer.find({ whatsappNumber }).sort({ createdAt: -1 }).lean();
 
     if (customers.length === 0) {
       return NextResponse.json(

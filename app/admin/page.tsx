@@ -1,5 +1,5 @@
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 import AdminTable from "./AdminTable";
 
 export const dynamic = "force-dynamic";
@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export default async function AdminDashboardPage() {
   await connectToDatabase();
 
-  const customers = await Customer.find().sort({ createdAt: -1 }).lean();
+  const customers = await TcyCustomer.find().sort({ createdAt: -1 }).lean();
 
   const rows = customers.map((customer) => ({
     id: String(customer._id),

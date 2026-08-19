@@ -1,6 +1,6 @@
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
-import { VoucherScan } from "@/models/Tcyvoucherscan";
+import { TcyCustomer } from "@/models/Tcycustomer";
+import { TcyVoucherScan } from "@/models/Tcyvoucherscan";
 import { headers } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -13,11 +13,11 @@ async function scanAndLoad(voucherId: string) {
     new Set([voucherId, normalizedId, `#${normalizedId}`])
   );
 
-  const customer = await Customer.findOne({ voucherId: { $in: candidateIds } });
+  const customer = await TcyCustomer.findOne({ voucherId: { $in: candidateIds } });
   if (!customer) return null;
 
   const userAgent = headers().get("user-agent") || undefined;
-  await VoucherScan.create({
+  await TcyVoucherScan.create({
     voucherId: customer.voucherId,
     customerId: String(customer._id),
     userAgent,

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { Customer } from "@/models/Tcycustomer";
+import { TcyCustomer } from "@/models/Tcycustomer";
 import { isAuthorizedAdminRequest } from "@/lib/adminAuth";
 import { sendVoucherOnWhatsApp } from "@/lib/whatsapp";
 
@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     await connectToDatabase();
 
-    let query = Customer.find();
+    let query = TcyCustomer.find();
     if (limit) {
       query = query.limit(parseInt(limit));
     }
