@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { isAuthorizedAdminRequest } from "@/lib/adminAuth";
 import { TcyCustomer } from "@/models/Tcycustomer";
-import { Counter, resetCounter } from "@/models/Tcycounter";
+import { TcyCounter, resetCounter } from "@/models/Tcycounter";
 
 export async function POST(req: NextRequest) {
   if (!isAuthorizedAdminRequest(req)) {
@@ -13,13 +13,13 @@ export async function POST(req: NextRequest) {
     await connectToDatabase();
 
     await TcyCustomer.deleteMany({});
-    await Counter.deleteMany({ _id: "voucher" });
-    await resetCounter("voucher", 1000);
+    await TcyCounter.deleteMany({ _id: "voucher" });
+    await resetCounter("voucher", 50000);
 
     return NextResponse.json({
       success: true,
-      message: "Customer data cleared and voucher counter reset to 1001.",
-      nextVoucher: 1001,
+      message: "Customer data cleared and voucher counter reset to 50005.",
+      nextVoucher: 50000,
     });
   } catch (err) {
     console.error("POST /api/admin/reset error:", err);
