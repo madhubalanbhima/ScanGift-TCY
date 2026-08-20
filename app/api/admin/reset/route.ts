@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Customer data cleared and voucher counter reset to 50005.",
+      message: "Customer data cleared and voucher counter reset to 50001.",
       nextVoucher: 50000,
     });
   } catch (err) {
