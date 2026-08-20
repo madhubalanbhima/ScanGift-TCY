@@ -22,7 +22,7 @@ export const TcyCounter =
  */
 export async function getNextSequence(name: string): Promise<number> {
   const current = await TcyCounter.findOne({ _id: name }).lean();
-  const nextSequence = current ? current.seq + 5 : STARTING_SEQUENCE + 5;
+  const nextSequence = current ? current.seq + 1 : STARTING_SEQUENCE + 1;
 
   await TcyCounter.findOneAndUpdate(
     { _id: name },
