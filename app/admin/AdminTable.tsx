@@ -24,6 +24,7 @@ export default function AdminTable({ customers }: { customers: CustomerRow[] }) 
   const router = useRouter();
   const [query, setQuery] = useState("");
   const [loggingOut, setLoggingOut] = useState(false);
+  const [exporting, setExporting] = useState(false);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -35,6 +36,33 @@ export default function AdminTable({ customers }: { customers: CustomerRow[] }) 
         c.voucherId.toLowerCase().includes(q)
     );
   }, [customers, query]);
+
+  async function handleExport() {
+    setExporting(true);
+    try {
+      const response = await fetch("/api/admin/export", {
+        headers: getAdminAuthHeaders(),
+      });
+
+      if (!response.ok) {
+        throw new Error("Export failed.");
+      }
+
+      const blob = await response.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download =
+        response.headers.get("content-disposition")?.match(/filename="?([^";]+)"?/i)?.[1] ||
+        "egold-customers.csv";
+      link.click();
+      URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+      console.error("Admin CSV export failed:", error);
+    } finally {
+      setExporting(false);
+    }
+  }
 
   async function handleLogout() {
     setLoggingOut(true);
@@ -62,12 +90,14 @@ export default function AdminTable({ customers }: { customers: CustomerRow[] }) 
           className="w-full sm:max-w-xs rounded-lg border border-line bg-parchment/40 px-4 py-2 text-sm text-ink placeholder:text-charcoal/40 focus:border-gold focus:ring-1 focus:ring-gold outline-none transition"
         />
         <div className="flex gap-3">
-          <a
-            href="/api/admin/export"
+          <button
+            type="button"
+            onClick={handleExport}
+            disabled={exporting}
             className="inline-flex items-center rounded-lg bg-gold-foil text-ink text-sm font-semibold px-4 py-2 tracking-wide hover:brightness-105 active:brightness-95 transition"
           >
-            Export CSV
-          </a>
+            {exporting ? "Exporting…" : "Export CSV"}
+          </button>
           <button
             onClick={handleLogout}
             disabled={loggingOut}
